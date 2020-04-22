@@ -1,3 +1,5 @@
+language: generic
+
 sudo: required
 
 services:
@@ -7,7 +9,7 @@ before_install:
   - docker build -t mparaskakis/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run mparaskakis/react-test npm test -- --coverage
+  - docker run -e CI=true mparaskakis/react-test npm test
 
 after_success:
   - docker build -t mparaskakis/multi-client ./client
