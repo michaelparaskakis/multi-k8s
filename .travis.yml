@@ -1,0 +1,26 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t mparaskakis/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run mparaskakis/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t mparaskakis/multi-client ./client
+  - docker build -t mparaskakis/multi-server ./server
+  - docker build -t mparaskakis/multi-worker ./worker
+  - docker build -t mparaskakis/multi-nginx ./nginx
+
+# Log in to the docker CLI through Travis
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+
+# Take images and push them to docker hub
+- docker push mparaskakis/multi-client
+- docker push mparaskakis/multi-nginx
+- docker push mparaskakis/multi-server
+- docker push mparaskakis/multi-worker
