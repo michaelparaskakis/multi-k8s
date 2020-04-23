@@ -11,6 +11,7 @@ app.use(bodyParser.json());
 
 // Postgres Client Setup
 const { Pool } = require("pg");
+
 const pgClient = new Pool({
   user: keys.pgUser,
   host: keys.pgHost,
@@ -18,6 +19,7 @@ const pgClient = new Pool({
   password: keys.pgPassword,
   port: keys.pgPort,
 });
+
 pgClient.on("error", () => console.log("Lost PG connection"));
 
 pgClient
@@ -43,7 +45,7 @@ app.get("/", (req, res) => {
 
 app.get("/values/all", async (req, res) => {
   const values = await pgClient.query("SELECT * from values");
-
+  console.log("values --", values.rows);
   res.send(values.rows);
 });
 
