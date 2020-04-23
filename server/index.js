@@ -26,11 +26,13 @@ pgClient
 
 // Redis Client Setup
 const redis = require("redis");
+
 const redisClient = redis.createClient({
   host: keys.redisHost,
   port: keys.redisPort,
   retry_strategy: () => 1000,
 });
+
 const redisPublisher = redisClient.duplicate();
 
 // Express route handlers
@@ -60,7 +62,12 @@ app.post("/values", async (req, res) => {
 
   redisClient.hset("values", index, "Nothing yet!");
   redisPublisher.publish("insert", index);
-  pgClient.query("INSERT INTO values(number) VALUES($1)", [index]);
+  try {
+    pgClient.query("INSERT INTO values(number) VALUES($1)", [index]);
+    console.log("inserting postgres value..");
+  } catch {
+    console.log(err);
+  }
 
   res.send({ working: true });
 });
