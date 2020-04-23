@@ -65,7 +65,11 @@ app.post("/values", async (req, res) => {
   redisClient.hset("values", index, "Nothing yet!");
   redisPublisher.publish("insert", index);
   try {
-    pgClient.query("INSERT INTO values(number) VALUES($1)", [index]);
+    pgClient.query(
+      "INSERT INTO values(number) VALUES($1)",
+      [index],
+      (err, result) => console.log("result:", result)
+    );
     console.log("inserting postgres value..");
   } catch {
     console.log(err);
