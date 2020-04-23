@@ -17,12 +17,11 @@ after_success:
   - docker build -t mparaskakis/multi-worker ./worker
   - docker build -t mparaskakis/multi-nginx ./nginx
 
-# Log in to the docker CLI through Travis
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Log in to the docker CLI through Travis
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
-
-# Take images and push them to docker hub
-- docker push mparaskakis/multi-client
-- docker push mparaskakis/multi-nginx
-- docker push mparaskakis/multi-server
-- docker push mparaskakis/multi-worker
+  # Take images and push them to docker hub
+  - docker push mparaskakis/multi-client
+  - docker push mparaskakis/multi-nginx
+  - docker push mparaskakis/multi-server
+  - docker push mparaskakis/multi-worker
