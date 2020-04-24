@@ -30,10 +30,10 @@ deploy:
   edge: true
   provider: elasticbeanstalk
   region: us-east-2
-  app: MultiDocker-env
-  env: MultidockerEnv-env
+  app: multi-docker
+  env: MultiDocker-env
   bucket_name: elasticbeanstalk-us-east-2-530114946190
-  bucket_path: MultiDocker-env
+  bucket_path: multi-docker
   on:
     branch: master
   access_key_id: $AWS_ACCESS_KEY
