@@ -70,7 +70,7 @@ app.post("/values", async (req, res) => {
     pgClient.query(
       "INSERT INTO values(number) VALUES($1)",
       [index],
-      (err, result) => console.log("result:", result)
+      (err, result) => console.log(err)
     );
     console.log("inserting postgres value..");
   } catch {
