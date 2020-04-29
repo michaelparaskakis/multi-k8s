@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-cluster-ip-service
+spec: # defines how our service will behave
+  type: ClusterIP
+  selector:
+    component: web # attaches the IP to the specified component
+  ports: # determines the ports that the ClusterIP service exposes
+    - port: 3000 # the port that other pods can use to access the pod
+      targetPort: 3000 # the port that we should forward traffic to on the pod
