@@ -30,7 +30,7 @@ spec:
               value: "5432"
             - name: PGDATABASE
               value: postgres
-            - name: POSTGRES_PASSWORD # name of environment variable
+            - name: PGPASSWORD # name of environment variable
               valueFrom:
                 secretKeyRef:
                   name: postgrespassword
