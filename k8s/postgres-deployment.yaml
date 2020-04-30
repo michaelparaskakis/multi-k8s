@@ -26,7 +26,7 @@ spec:
               mountPath: /var/lib/postgresql/data # designates the container directory that should be stored in the persistent volume
               subPath: postgres # will copy the data from the mountPath into a sub-directory on the persistent volume
           env:
-            - name: PGPASSWORD # the postgres container will automatically use this value if it is provided (as opposed to default password)
+            - name: POSTGRES_PASSWORD # the postgres container will automatically use this value if it is provided (as opposed to default password)
               valueFrom:
                 secretKeyRef:
                   name: postgrespassword
