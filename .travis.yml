@@ -1,0 +1,38 @@
+sudo: required
+services:
+  - docker
+env:
+  global:
+    # determines SHA for current commit and assigns it to env variable
+    - SHA=$(git rev-parse HEAD)
+    # disables any user input prompts by the cloudSDK
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+before_install:
+  # take the encrypted google cloud json service-access file and unencrypt it in our app directory
+  - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
+  # download google cloud sdk and install
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  # apply/source configuration in path.bash.inc to modify our shell
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  # install and update kubectl in travis environment
+  - gcloud components update kubectl
+  # a GCP service account is similar to IAM for AWS deployment
+  - gcloud auth activate-service-account --key-file service-account.json
+  # tell GCP which project to work on
+  - gcloud config set project multi-k8s-275715
+  # tell GCP which zone our project is on
+  - gcloud config set compute/zone us-central1-c
+  # tell GCP our cluster
+  - gcloud container clusters get-credentials multi-cluster
+  # log into Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # build image to run test suite
+  - docker build -t mparaskakis/react-test -f ./client/Dockerfile.dev ./client
+script:
+  - docker run -e CI=true mparaskakis/react-test npm run test
+deploy:
+  provider: script
+  # custom deploy script that needs to run
+  script: bash ./deploy.sh
+  on:
+    branch: master
