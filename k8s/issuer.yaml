@@ -1,0 +1,19 @@
+# reach into certmanager objects bucket
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  # link to letsencrypt API
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # email not used
+    email: "mparas@gmail.com"
+    # used as part of domain verification process
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    # tells issuer what method to use to verify the domain
+    solvers:
+      - http01:
+          ingress:
+            class: nginx

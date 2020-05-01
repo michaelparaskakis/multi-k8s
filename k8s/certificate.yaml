@@ -1,0 +1,25 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: k8s-multi-com-tls
+spec:
+  # specifies where our certificate should be stored after it is obtained
+  secretName: k8s-multi-com
+  # this is a reference back to the issuer name in issuer.yaml
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  # specifies the domain the certificate is good for
+  commonName: wisehires.io
+  # list of domains that should be associated with the certificate
+  dnsNames:
+    - wisehires.io
+    - www.wisehires.io
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        # domains to be verified
+        domains:
+          - wisehires.io
+          - www.wisehires.io
