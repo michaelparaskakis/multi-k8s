@@ -6,9 +6,29 @@ metadata:
   annotations: # additional config options for service created
     kubernetes.io/ingress.class: nginx # create controller based on specific nginx project
     nginx.ingress.kubernetes.io/rewrite-target: /$1 # removes the matched URI and carries forward the remaining URI
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # informs ingress service to expect a certificate from specified issuer
+    nginx.ingress.kubernetes.io/sll-redirect: "true" # force HTTPS redirect
 spec:
+  # tell nginx to serve using HTTPS and where to get the certificate from
+  tls:
+    - hosts: # hosts that users can connect https
+        - wisehires.io
+        - www.wisehires.io
+      secretName: k8s-multi-com # name of secret that stores our certificate
   rules:
-    - http:
+    - host: wisehires.io # apply following rules when this domain is visited
+      http:
+        paths:
+          - path: /?(.*)
+            backend:
+              serviceName: client-cluster-ip-service
+              servicePort: 3000
+          - path: /api/?(.*)
+            backend:
+              serviceName: server-cluster-ip-service
+              servicePort: 5000
+    - host: www.wisehires.io # apply following rules when this domain is visited
+      http:
         paths:
           - path: /?(.*)
             backend:
